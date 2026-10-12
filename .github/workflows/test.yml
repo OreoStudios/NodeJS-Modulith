@@ -22,6 +22,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
       - name: Build and start local SupportDesk container
         run: docker compose --env-file .env.example up -d --build supportdesk
       - name: Verify HTTP health and Prometheus exposition
@@ -32,6 +34,8 @@ jobs:
           done
           curl -fsS http://127.0.0.1:3000/health
           curl -fsS http://127.0.0.1:3000/metrics | grep -q 'supportdesk_http_requests_total'
+      - name: Simulate authenticated benign traffic
+        run: DURATION_SECONDS=3 REQUESTS_PER_SECOND=4 node examples/supportdesk/scripts/normal-traffic.js
       - name: Container logs
         if: failure()
         run: docker compose --env-file .env.example logs --tail=100 supportdesk
