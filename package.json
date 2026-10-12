@@ -1,0 +1,15 @@
+{
+  "name": "ojs-workspace",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "test": "node --test packages/*/test/*.test.js",
+    "test:all": "npm test && npm --workspace @ojs/supportdesk test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
