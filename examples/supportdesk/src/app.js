@@ -42,7 +42,9 @@ async function buildApp(options={}) {
   app.set('views',path.join(__dirname,'..','views'));
   app.set('view engine','ejs');
   app.use(express.urlencoded({extended:false,limit:'20kb'}));
-  app.use(express.static(path.join(__dirname,'..','public'), {redirect:false}));
+  // Only the stylesheet is publicly served. KB HTML requires authentication
+  // through /kb/view, never direct static access.
+  app.get('/style.css', (_req, res) => res.sendFile(path.join(__dirname,'..','public','style.css')));
   app.use(session({secret,saveUninitialized:false,resave:false,
     cookie:{httpOnly:true,sameSite:'lax',secure:process.env.COOKIE_SECURE==='1',maxAge:60*60*1000}}));
   app.use(observer.middleware);
