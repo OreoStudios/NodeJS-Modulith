@@ -35,6 +35,23 @@ Local educational demo accounts (NEVER use publicly):
 admin@supportdesk.local / Admin_123,
 jdupont@supportdesk.local / User_1234.
 
+## One Compose with the complete Sentinel X stack
+
+To satisfy the final EPITECH Compose deliverable (app + Prometheus + Grafana
++ Wazuh Manager/Indexer/Dashboard), prepare the official Wazuh certificates
+and then launch all six services in one Compose project:
+
+    cp .env.example .env
+    # Replace the example passwords with strong secrets
+    OJS_PREPARE_ONLY=1 bash wazuh/bootstrap.sh
+    docker compose -f compose.full.yml up -d --build
+    docker compose -f compose.full.yml ps
+
+The Wazuh dashboard is on https://127.0.0.1:8443. Expect a self-signed
+certificate warning. The full Compose has passed CI syntax validation,
+but the Wazuh runtime still requires manual hardware-dependent validation
+and live alert evidence.
+
 ## EPITECH documentation
 
 - CONTRACT.md — required technical contract, still awaiting team validation.

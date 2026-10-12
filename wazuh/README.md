@@ -19,7 +19,20 @@ For Linux Wazuh Indexer requires vm.max_map_count >= 262144:
 
     sudo sysctl -w vm.max_map_count=262144
 
-## Start the complete stack
+## Unified final Compose (recommended for EPITECH)
+
+    cp .env.example .env
+    # Set SESSION_SECRET and GRAFANA_ADMIN_PASSWORD
+    OJS_PREPARE_ONLY=1 bash wazuh/bootstrap.sh
+    docker compose -f compose.full.yml up -d --build
+
+This prepares official certificates and mounts the application JSONL volume
+into Wazuh. It launches SupportDesk + Prometheus + Grafana and all three
+Wazuh services in a **single Compose project**. A syntax check is included
+in GitHub Actions, but real Wazuh ingestion and alerts are unverified.
+Do not expose this local demo stack publicly.
+
+## Start the complete stack (alternative: separate official Wazuh Compose)
 
 1. Copy .env.example to .env at the OJS root, set SESSION_SECRET to a random
    value of at least 32 characters and set a strong GRAFANA_ADMIN_PASSWORD.
