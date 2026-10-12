@@ -1,0 +1,10 @@
+<%- include('header',{title:'Profile',user}) %>
+<div class="eyebrow">ACCOUNT</div><h1>Profile settings</h1>
+<div class="panel narrow"><p class="muted"><%= user.username %> · <%= user.email %></p>
+<form method="POST" action="/profile">
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<label>Display name<input type="text" name="display_name" maxlength="100" value="<%= user.display_name || '' %>"></label>
+<label>Theme<select name="theme"><option value="light" <%= user.theme!=='dark'?'selected':'' %>>Light</option>
+<option value="dark" <%= user.theme==='dark'?'selected':'' %>>Dark</option></select></label>
+<button class="button" type="submit">Save changes</button></form></div>
+<%- include('footer') %>

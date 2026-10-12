@@ -1,0 +1,24 @@
+<%- include('header',{title:'Tickets',user}) %>
+<div class="panel-title"><div><div class="eyebrow">SUPPORT</div><h1>Tickets</h1></div>
+<a class="button small secondary" href="/tickets?view=mine">My tickets</a></div>
+<div class="panel"><form method="POST" action="/tickets/search" class="row-form">
+<input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<input type="search" name="search" maxlength="200" placeholder="Search title or description" value="<%= search || '' %>">
+<button type="submit" class="button">Search</button><a href="/tickets" class="button secondary">Clear</a></form></div>
+<div class="panel"><form method="GET" action="/tickets" class="row-form">
+<input type="hidden" name="view" value="<%= viewMine ? 'mine' : '' %>">
+<label>Status<select name="status"><option value="">All</option>
+<% for(const name of ['open','in_progress','resolved','closed']) { %><option value="<%= name %>" <%= filters.status===name?'selected':'' %>><%= name %></option><% } %>
+</select></label><label>Priority<select name="priority"><option value="">All</option>
+<% for(const name of ['urgent','high','medium','low']) { %><option value="<%= name %>" <%= filters.priority===name?'selected':'' %>><%= name %></option><% } %>
+</select></label><label>Sort<select name="sort">
+<% for(const name of ['created_at','title','priority','status']) { %><option value="<%= name %>" <%= filters.sort===name?'selected':'' %>><%= name %></option><% } %>
+</select></label><label>Direction<select name="dir"><option value="desc">Descending</option><option value="asc" <%= filters.dir==='ASC'?'selected':'' %>>Ascending</option></select></label>
+<button class="button" type="submit">Apply</button></form>
+<table><thead><tr><th>#</th><th>Ticket</th><th>Status</th><th>Priority</th><th>Created by</th><th>Action</th></tr></thead>
+<tbody><% for(const t of tickets) { %><tr><td><%= t.id %></td><td><a href="/tickets/<%= t.id %>"><%= t.title %></a></td>
+<td><span class="pill"><%= t.status %></span></td><td><%= t.priority %></td>
+<td><%= t.creator_display_name || t.creator_name || '-' %></td>
+<td><a href="/tickets/<%= t.id %>/export">Export</a></td></tr><% } %>
+<% if (!tickets.length) { %><tr><td colspan="6">No matching tickets.</td></tr><% } %></tbody></table></div>
+<%- include('footer') %>

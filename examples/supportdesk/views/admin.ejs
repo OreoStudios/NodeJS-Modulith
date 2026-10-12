@@ -1,0 +1,10 @@
+<%- include('header',{title:'Administration',user}) %>
+<div class="eyebrow">ADMINISTRATION</div><h1>User directory</h1>
+<div class="panel"><table><thead><tr><th>#</th><th>Username</th><th>Email</th><th>Role</th></tr></thead><tbody>
+<% for(const u of users){ %><tr><td><%= u.id %></td><td><%= u.username %></td><td><%= u.email %></td><td><%= u.role %></td></tr><% } %>
+</tbody></table></div><div class="panel"><h2>Remote URL fetch</h2>
+<p class="muted">Disabled in this hardened build to prevent SSRF. Attempts will produce a security event.</p>
+<form method="POST" action="/admin/fetch"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
+<label>URL<input type="text" name="url" placeholder="https://example.com" maxlength="300"></label>
+<button class="button secondary" type="submit">Test blocked operation</button></form></div>
+<%- include('footer') %>

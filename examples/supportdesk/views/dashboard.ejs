@@ -1,0 +1,14 @@
+<%- include('header',{title:'Dashboard',user}) %>
+<div class="eyebrow">OVERVIEW</div><h1>Welcome, <%= user.display_name || user.username %></h1>
+<p class="muted">Your support tickets and current operational status.</p>
+<div class="stats"><div class="stat"><span>Total tickets</span><strong><%= stats.total %></strong></div>
+<div class="stat"><span>Open</span><strong><%= stats.open %></strong></div>
+<div class="stat"><span>In progress</span><strong><%= stats.inProgress %></strong></div>
+<div class="stat"><span>Urgent</span><strong><%= stats.urgent %></strong></div></div>
+<div class="panel"><div class="panel-title"><h2>Recent tickets</h2><a class="button small" href="/tickets">View all</a></div>
+<table><thead><tr><th>#</th><th>Title</th><th>Status</th><th>Priority</th><th>Created by</th></tr></thead><tbody>
+<% for(const t of recent){ %><tr><td><%= t.id %></td>
+<td><a href="/tickets/<%= t.id %>"><%= t.title %></a></td><td><span class="pill"><%= t.status %></span></td>
+<td><%= t.priority %></td><td><%= t.creator_name %></td></tr><% } %>
+</tbody></table></div>
+<%- include('footer') %>
