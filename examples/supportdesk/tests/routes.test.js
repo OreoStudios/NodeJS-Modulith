@@ -11,9 +11,15 @@ async function call(route, options={}) {
 }
 function form(values){return new URLSearchParams(values).toString();}
 async function login(email,password){
-  const response=await call('/login',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:form({email,password})});
-  return {response,cookie:response.headers.get('set-cookie')?.split(';')[0]};
+  const get=await call('/login');
+  const initialCookie=get.headers.get('set-cookie')?.split(';')[0];
+  const page=await get.text();
+  const csrf=page.match(/name="_csrf" value="([^"]+)"/)?.[1];
+  assert.ok(csrf,'Login page must provide a CSRF token');
+  const response=await call('/login',{method:'POST',headers:{
+      'Content-Type':'application/x-www-form-urlencoded',Cookie:initialCookie},
+    body:form({_csrf:csrf,email,password})});
+  return {response,cookie:response.headers.get('set-cookie')?.split(';')[0]||initialCookie};
 }
 async function token(cookie, route='/tickets'){
   const response=await call(route,{headers:{Cookie:cookie}});

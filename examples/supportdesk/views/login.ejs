@@ -1,7 +1,7 @@
 <%- include('header',{title:'Login',user}) %>
 <div class="auth-card"><div class="eyebrow">ACCESS CONTROL</div><h1>Welcome back</h1><p>Log in to the internal helpdesk.</p>
 <% if (error) { %><div class="alert">Invalid credentials. Please try again.</div><% } %>
-<form method="POST" action="/login">
+<form method="POST" action="/login"><input type="hidden" name="_csrf" value="<%= csrfToken %>">
 <label>Email address<input name="email" type="email" required maxlength="254" autocomplete="username" placeholder="name@supportdesk.local"></label>
 <label>Password<input name="password" type="password" required autocomplete="current-password"></label>
 <button type="submit" class="button">Sign in</button></form>

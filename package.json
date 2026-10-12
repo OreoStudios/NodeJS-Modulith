@@ -6,9 +6,10 @@
     "examples/*"
   ],
   "scripts": {
-    "test": "node --test packages/*/test/*.test.js",
+    "test": "node --test packages/*/test/*.test.js examples/supportdesk/tests/*.test.js",
+    "test:unit": "node --test packages/*/test/*.test.js",
     "test:web": "node --test examples/supportdesk/tests/*.test.js",
-    "test:all": "npm test && npm run test:web"
+    "test:all": "npm test"
   },
   "engines": {
     "node": ">=22"

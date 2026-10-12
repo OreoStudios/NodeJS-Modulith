@@ -3,7 +3,7 @@ const crypto = require('node:crypto');
 function ensureCsrf(req, res, next) {
   if (!req.session.csrf) req.session.csrf = crypto.randomBytes(24).toString('hex');
   res.locals.csrfToken = req.session.csrf;
-  if (req.method !== 'POST' || req.path === '/login') return next();
+  if (req.method !== 'POST') return next();
   const received = req.body && req.body._csrf;
   const expected = req.session.csrf;
   if (typeof received !== 'string' || received.length !== expected.length ||
