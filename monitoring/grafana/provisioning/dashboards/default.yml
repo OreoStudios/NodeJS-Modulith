@@ -1,0 +1,6 @@
+apiVersion: 1
+providers:
+  - name: OJS
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

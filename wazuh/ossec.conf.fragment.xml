@@ -1,0 +1,2 @@
+<!-- Merge into the installed agent ossec.conf -->
+<localfile><log_format>json</log_format><location>/var/log/supportdesk/events.jsonl</location></localfile>
