@@ -1,4 +1,6 @@
 'use strict';
+const { runMigrations } = require('./migrations');
+const { scopeRepository } = require('./policy');
 const IDENTIFIER = /^[A-Za-z_][A-Za-z0-9_]*$/;
 function ident(input) {
   if (typeof input !== 'string' || !IDENTIFIER.test(input)) throw Error('Unsafe SQL identifier');
@@ -59,5 +61,6 @@ class OjsORM {
     if (typeof fn !== 'function' || typeof this.db.transaction !== 'function') throw Error('Transactions unsupported');
     return this.db.transaction(fn)();
   }
+  migrate(migrations) { return runMigrations(this.db,migrations); }
 }
-module.exports = { OjsORM, model };
+module.exports = { OjsORM, model, runMigrations, scopeRepository };

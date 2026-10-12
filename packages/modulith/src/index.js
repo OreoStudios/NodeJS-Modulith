@@ -1,8 +1,13 @@
 'use strict';
+const { EventBus } = require('./events');
+const { Container } = require('./container');
+const { moduleGraph } = require('./graph');
 class Modulith {
   #definitions = new Map();
   #instances = new Map();
   #started = [];
+  #events = new EventBus();
+  get events() { return this.#events; }
   register(definition) {
     if (!definition || !/^[a-z][a-z0-9-]*$/.test(definition.name)) throw Error('Invalid module name');
     if (this.#definitions.has(definition.name)) throw Error('Duplicate module: ' + definition.name);
@@ -12,6 +17,8 @@ class Modulith {
     this.#definitions.set(definition.name, { ...definition, dependencies: [...dependencies] });
     return this;
   }
+  definitions() { return [...this.#definitions.values()].map(d => ({name:d.name,dependencies:[...d.dependencies]})); }
+  graph() { return moduleGraph(this.definitions()); }
   order() {
     const result = [], visiting = new Set(), visited = new Set();
     const visit = name => {
@@ -31,13 +38,13 @@ class Modulith {
       for (const name of this.order()) {
         const def = this.#definitions.get(name);
         const deps = Object.fromEntries(def.dependencies.map(dep => [dep, this.#instances.get(dep)]));
-        const instance = await def.factory(Object.freeze(deps), context);
+        const instance = await def.factory(Object.freeze(deps), Object.freeze({...context, events:this.#events}));
         if (instance === null || typeof instance !== 'object') throw Error('Module must expose an object: ' + name);
         if (typeof instance.start === 'function') await instance.start();
         this.#instances.set(name, Object.freeze(instance));
         this.#started.push(name);
       }
-    } catch (error) { await this.stop(); throw error; }
+    } catch (error) { try { await this.stop(); } catch (cleanupError) { error.cleanupError = cleanupError; } throw error; }
     return this;
   }
   get(name) {
@@ -45,10 +52,15 @@ class Modulith {
     return this.#instances.get(name);
   }
   async stop() {
+    const errors = [];
     for (const name of [...this.#started].reverse()) {
-      try { await this.#instances.get(name)?.stop?.(); } finally { this.#instances.delete(name); }
+      try { await this.#instances.get(name)?.stop?.(); }
+      catch (error) { errors.push(error); }
+      finally { this.#instances.delete(name); }
     }
     this.#started = [];
+    this.#events.clear();
+    if (errors.length) throw new AggregateError(errors, 'Module shutdown failures');
   }
 }
-module.exports = { Modulith };
+module.exports = { Modulith, EventBus, Container, moduleGraph };
