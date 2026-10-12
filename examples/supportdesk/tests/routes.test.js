@@ -69,6 +69,8 @@ test('path traversal is refused and a security event is emitted',async()=>{
   const user=await login('jdupont@supportdesk.local','User_1234');
   const invalid=await call('/kb/view?doc=..%2F..%2Fetc%2Fpasswd',{headers:{Cookie:user.cookie}});
   assert.equal(invalid.status,404);
+  const landing=await call('/kb',{headers:{Cookie:user.cookie}});
+  assert.equal(landing.status,200,'KB landing page must render, not redirect');
   const valid=await call('/kb/view?doc=vpn-guide.html',{headers:{Cookie:user.cookie}});
   assert.equal(valid.status,200);
   assert.match(await valid.text(),/VPN Guide/);
