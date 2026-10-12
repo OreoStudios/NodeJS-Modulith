@@ -1,14 +1,53 @@
-# OJS Modulith
+# OJS — Reusable Node.js Modulith + ORM
 
-A reusable, independent Node.js modular-monolith toolkit, including **OJS ORM** and an example SupportDesk application.
+OJS is an independent, reusable Node.js toolkit, with a **Sentinel X
+SupportDesk** application serving as a real-world example.
 
-> Early development: not security audited for production. All security guarantees require threat-specific tests and review.
+**Packages:** @ojs/modulith (modules, events, DI), @ojs/orm (bound SQL,
+migrations, scoped repositories), @ojs/observability (JSONL logs and Prometheus
+metrics), @ojs/security-events (event normalization and safety helpers).
 
-## Workspace
+## Sentinel X Quick Start
 
-- `packages/modulith` — dependency graph and lifecycle for named modules
-- `packages/orm` — SQLite repository layer with parameterized values and schema-controlled identifiers
-- `examples/supportdesk` — migration target for the Sentinel X SupportDesk sample
-- `docs/SECURITY-AUDIT.md` — scoped audit findings, remediation and verification tracking
+Requirements: Node.js 22+, Docker Compose, git, Python 3.
+To test locally:
 
-The original SupportDesk pedagogical vulnerabilities must not be silently represented as safe. Keep attack exercises on an isolated local test instance.
+    npm install
+    npm run test:all
+
+To start the application with Prometheus and Grafana, copy .env.example to
+.env, replace both secrets and run:
+
+    docker compose up --build -d
+
+Local service URLs: SupportDesk http://127.0.0.1:3000,
+Prometheus http://127.0.0.1:9090,
+Grafana http://127.0.0.1:3001.
+
+For **all Wazuh components** use:
+
+    bash wazuh/bootstrap.sh
+
+Read wazuh/README.md for dependencies, certificates, expected Wazuh alerts,
+startup troubleshooting and local-only security restrictions.
+
+Local educational demo accounts (NEVER use publicly):
+admin@supportdesk.local / Admin_123,
+jdupont@supportdesk.local / User_1234.
+
+## EPITECH documentation
+
+- CONTRACT.md — required technical contract, still awaiting team validation.
+- docs/ATTACK-PLANS.md — at least three detailed *draft* plans.
+- docs/SENTINEL-X-RUNBOOK.md — Wazuh validation and attack notes.
+- docs/QA-CHECKLIST.md — functional, non-functional and final verification.
+
+## Status and limits
+
+SupportDesk key routes and OJS observability/security packages are implemented,
+with automated HTTP tests. Actual Docker/Wazuh launch, Wazuh alert screenshots,
+attack executions, false-positive measurements, full security audit and
+team approval require separate execution and verification.
+
+OJS reduces repetitive security and observability work; no Node.js ORM can
+guarantee that an entire application is fully secure.
