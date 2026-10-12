@@ -65,6 +65,12 @@ test('ordinary user denied foreign ticket export',async()=>{
   const own=await call('/tickets/1/export',{headers:{Cookie:user.cookie}});
   assert.equal(own.status,200);assert.match(await own.text(),/TICKET #1/);
 });
+test('knowledge-base files are not exposed as public static assets', async()=> {
+  const unauth=await call('/kb/vpn-guide.html');
+  assert.equal(unauth.status,404);
+  const stylesheet=await call('/style.css');
+  assert.equal(stylesheet.status,200);
+});
 test('path traversal is refused and a security event is emitted',async()=>{
   const user=await login('jdupont@supportdesk.local','User_1234');
   const invalid=await call('/kb/view?doc=..%2F..%2Fetc%2Fpasswd',{headers:{Cookie:user.cookie}});
