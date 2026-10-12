@@ -1,0 +1,9 @@
+{
+  "name": "@ojs/observability",
+  "version": "0.1.0",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  }
+}
