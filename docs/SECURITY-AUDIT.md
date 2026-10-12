@@ -1,25 +1,26 @@
-# OJS / SupportDesk security audit — initial static findings
+# OJS / SupportDesk — preliminary security review
 
-**Status: preliminary static review, NOT a complete audit.** The initial supplied SupportDesk ZIP was inspected. Findings must be verified in an isolated local environment. No third-party target testing is authorized.
+**Not a full security audit or certification.** The supplied SupportDesk is
+an educational vulnerable application. Testing may only target the approved
+local Docker environment.
 
-| ID | Location | Risk | Remediation |
+| Risk | Original issue | OJS migration mitigation | What remains |
 |---|---|---|---|
-| SD-01 | routes/tickets.js list/search | SQL injection via string-interpolated status, priority, sort and search | Parameterized predicates; strict sort-column allowlist; regression tests |
-| SD-02 | routes/tickets.js export/detail/comment | IDOR / missing ticket ownership checks | Centralize tenant- or owner-scoped queries and admin exceptions |
-| SD-03 | routes/kb.js /view | Path traversal / arbitrary file reads | Resolve fixed basename allowlist and verify canonical directory boundary |
-| SD-04 | routes/admin.js /fetch | SSRF including internal addresses and redirect rebinding | Prefer removing feature; otherwise strict allowlist and outbound network restrictions |
-| SD-05 | routes/auth.js /login and seed data | Plaintext credential comparison | Password hashing, session rotation and login throttling |
-| SD-06 | app.js | Hardcoded fallback session secret, overly broad trust proxy | Required environment secret, explicit proxy trust, cookie policy, CSRF defenses |
-| SD-07 | logger / diagnostics | Incomplete structured security logging | Redact credentials, emit one JSON log per event; expose no sensitive bodies |
-| SD-08 | views and user-controlled fields | Possible XSS depending on templating context | Escape on output, sanitize trusted rich HTML, CSP |
-| SD-09 | dependency versions | Old package versions | Pin and audit dependencies, fix advisories |
+| SQL injection | Search / sorting interpolated SQL | ORM bound values and model fields; defensive search | Dynamic fuzz tests / code review |
+| IDOR | Ticket export/reads not owner-scoped | Ownership checks on exports/details/comments | Full authorization matrix |
+| Path traversal | KB file path under user control | Fixed basename + canonical path check | Symlink and TOCTOU review |
+| SSRF | Admin server-side URL fetch | Remote fetch disabled, security event emitted | Network egress restrictions |
+| Credential exposure | Demo plaintext credentials | Salted scrypt hashes and session regeneration | Rate limiting, MFA, secret rotation |
+| CSRF | State changes not protected | CSRF token checked on POST, including login | SameSite/proxy and UX review |
+| XSS | Untrusted user content in EJS | Escaped templates and regression tests | Full template/output audit, CSP |
+| Logging | No shared event contract | JSONL sanitized body/query and type conventions | Disk rotation and PII retention policy |
+| Sessions | Unsafe defaults | Required secret, httpOnly and sameSite cookies | Replace MemoryStore, TLS, persistence |
+| Dependencies | Age/vulnerabilities unknown | Workspace modernized | SCA review, pinning and updates |
+| Wazuh | No end-to-end alerts | XML rules and official Docker bootstrap | Real deployment and detection verification |
 
-## Validation still required
+Automated HTTP tests cover specific regression samples, not comprehensive
+pentesting. Browser-based access tests, dependency scanning, container runtime
+audit, network boundaries, concurrent access testing and Wazuh alert evidence
+must still be performed.
 
-- Full route-by-route code audit with severity and reproducible tests
-- Authentication/session, authorization, CSRF, XSS and SSRF regression tests
-- Dependency audit and Docker container hardening review
-- Dynamic testing in local Docker scope only
-- Wazuh log/alert end-to-end verification and false-positive analysis
-
-**No claim of total security or completed migration is made.**
+No ORM can make an entire application 100% secure; OJS is defensive by design.
