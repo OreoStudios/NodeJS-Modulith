@@ -34,12 +34,14 @@ content=content.replace('- 443:5601','- "127.0.0.1:8443:5601"')
 compose.write_text(content)
 PY
 cd "$ROOT"
-docker compose up --build -d
+if [[ "${OJS_PREPARE_ONLY:-0}" != "1" ]]; then docker compose up --build -d; fi
 cd "$SINGLE"
 if [[ ! -f "$SINGLE/config/wazuh_indexer_ssl_certs/root-ca.pem" ]]; then
   docker compose -f generate-indexer-certs.yml run --rm generator
 fi
 export OJS_REPO_ROOT="$ROOT"
-docker compose -p ojs-wazuh -f "$SINGLE/docker-compose.yml" -f "$ROOT/wazuh/compose.override.yml" up -d
+if [[ "${OJS_PREPARE_ONLY:-0}" != "1" ]]; then
+  docker compose -p ojs-wazuh -f "$SINGLE/docker-compose.yml" -f "$ROOT/wazuh/compose.override.yml" up -d
+fi
 echo "Start requested. Wazuh HTTPS dashboard: https://127.0.0.1:8443"
 echo "Verify logs/rules and a live attack alert before treating the integration as complete."
