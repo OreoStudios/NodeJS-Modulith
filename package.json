@@ -6,10 +6,12 @@
     "examples/*"
   ],
   "scripts": {
-    "test": "node --test packages/*/test/*.test.js",
-    "test:all": "npm test && npm --workspace @ojs/supportdesk test"
+    "test": "node --test packages/*/test/*.test.js examples/supportdesk/tests/*.test.js",
+    "test:unit": "node --test packages/*/test/*.test.js",
+    "test:web": "node --test examples/supportdesk/tests/*.test.js",
+    "test:all": "npm test"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }

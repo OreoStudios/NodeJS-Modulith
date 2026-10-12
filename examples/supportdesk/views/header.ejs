@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title><%= title %> · SupportDesk</title><link rel="stylesheet" href="/style.css"></head>
+<body data-theme="<%= user?.theme === 'dark' ? 'dark' : 'light' %>">
+<header class="nav"><div class="container nav-inner"><a class="brand" href="/dashboard"><span>◈</span> SupportDesk</a>
+<% if (user) { %><nav><a href="/dashboard">Dashboard</a><a href="/tickets">Tickets</a><a href="/kb">Knowledge Base</a>
+<a href="/profile">Profile</a><% if (user.role==='admin') { %><a href="/admin">Admin</a><% } %></nav>
+<div class="account"><span><%= user.display_name || user.username %></span>
+<form method="POST" action="/logout"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button type="submit" class="signout">Sign out</button></form></div><% } %>
+</div></header><main class="container main">

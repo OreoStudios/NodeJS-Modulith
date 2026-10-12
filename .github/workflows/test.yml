@@ -3,11 +3,42 @@ on:
   push:
   pull_request:
 jobs:
-  unit:
+  tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
+        with: { node-version: '22' }
+      - run: npm install --no-audit --no-fund
       - run: npm test
+      - name: Validate Compose and Wazuh XML syntax
+        run: |
+          docker compose --env-file .env.example config -q
+          python3 -c "import xml.etree.ElementTree as ET; ET.parse('wazuh/local_rules.xml')"
+          bash -n wazuh/bootstrap.sh
+  docker-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - name: Build and start local SupportDesk container
+        run: docker compose --env-file .env.example up -d --build supportdesk
+      - name: Verify HTTP health and Prometheus exposition
+        run: |
+          for n in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:3000/health && break
+            sleep 2
+          done
+          curl -fsS http://127.0.0.1:3000/health
+          curl -fsS http://127.0.0.1:3000/metrics | grep -q 'supportdesk_http_requests_total'
+      - name: Simulate authenticated benign traffic
+        run: DURATION_SECONDS=3 REQUESTS_PER_SECOND=4 node examples/supportdesk/scripts/normal-traffic.js
+      - name: Container logs
+        if: failure()
+        run: docker compose --env-file .env.example logs --tail=100 supportdesk
+      - name: Stop and clean local containers
+        if: always()
+        run: docker compose --env-file .env.example down -v

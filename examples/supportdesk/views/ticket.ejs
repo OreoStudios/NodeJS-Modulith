@@ -1,0 +1,16 @@
+<%- include('header',{title:'Ticket '+ticket.id,user}) %>
+<div class="eyebrow">TICKET #<%= ticket.id %></div><h1><%= ticket.title %></h1>
+<p><a href="/tickets">← Back to tickets</a></p>
+<div class="panel"><p><span class="pill"><%= ticket.status %></span> <span class="pill"><%= ticket.priority %></span></p>
+<p><%= ticket.description || 'No description provided' %></p>
+<p class="muted">Created by <%= ticket.creator_name || '?' %> · Assigned to <%= ticket.assignee_name || 'Nobody' %></p>
+<a class="button small secondary" href="/tickets/<%= ticket.id %>/export">Download as text</a></div>
+<div class="panel"><h2>Comments (<%= comments.length %>)</h2>
+<% for(const c of comments){ %><article class="comment"><strong><%= c.author_name %></strong> <small><%= c.created_at %></small>
+<p><%= c.content %></p></article><% } %>
+<% if(!comments.length) { %><p class="muted">No comments yet.</p><% } %>
+<form method="POST" action="/tickets/<%= ticket.id %>/comment">
+<input type="hidden" name="_csrf" value="<%= csrfToken %>"><label>Add a comment
+<textarea name="content" maxlength="5000" required rows="4" placeholder="Write your comment"></textarea></label>
+<button class="button" type="submit">Post comment</button></form></div>
+<%- include('footer') %>

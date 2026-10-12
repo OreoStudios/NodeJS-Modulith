@@ -1,0 +1,24 @@
+{
+  "name": "@ojs/supportdesk",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Sentinel X SupportDesk on OJS Modulith",
+  "main": "app.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "@ojs/modulith": "file:../../packages/modulith",
+    "@ojs/orm": "file:../../packages/orm",
+    "@ojs/observability": "file:../../packages/observability",
+    "@ojs/security-events": "file:../../packages/security-events",
+    "better-sqlite3": "^11.10.0",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "ejs": "^3.1.10"
+  }
+}

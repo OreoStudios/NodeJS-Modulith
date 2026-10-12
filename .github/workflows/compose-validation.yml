@@ -1,0 +1,24 @@
+name: OJS Sentinel X Compose Validation
+on:
+  push:
+  pull_request:
+jobs:
+  compose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get official pinned Wazuh v4.14.8 configs
+        run: |
+          mkdir -p wazuh/vendor
+          git clone --depth 1 --branch v4.14.8 https://github.com/wazuh/wazuh-docker.git wazuh/vendor/wazuh-docker
+      - name: Validate compact Compose
+        env:
+          SESSION_SECRET: github-ci-only-secret-longer-than-thirty-two-characters
+          GRAFANA_ADMIN_PASSWORD: github-ci-local-only
+        run: docker compose -f compose.yml config --quiet
+      - name: Validate complete Wazuh Compose
+        env:
+          SESSION_SECRET: github-ci-only-secret-longer-than-thirty-two-characters
+          GRAFANA_ADMIN_PASSWORD: github-ci-local-only
+        run: docker compose -f compose.full.yml config --quiet

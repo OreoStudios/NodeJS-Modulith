@@ -1,0 +1,11 @@
+# Layer on the official wazuh-docker single-node compose.
+# OJS_REPO_ROOT must be an absolute path to the repository.
+services:
+  wazuh.manager:
+    volumes:
+      - ojs-supportdesk-logs:/var/log/supportdesk:ro
+      - ${OJS_REPO_ROOT:?Define OJS_REPO_ROOT}/wazuh/local_rules.xml:/var/ossec/etc/rules/ojs_rules.xml:ro
+volumes:
+  ojs-supportdesk-logs:
+    external: true
+    name: ojs_sentinel_x_supportdesk_logs

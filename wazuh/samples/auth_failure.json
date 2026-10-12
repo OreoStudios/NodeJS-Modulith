@@ -1,0 +1,1 @@
+{"timestamp":"2026-10-12T12:00:00.000Z","level":"WARN","event_type":"auth_failure","source_ip":"192.0.2.25","user":"demo","endpoint":"/login","method":"POST","status_code":401,"message":"Invalid credentials","query":null,"body":null}

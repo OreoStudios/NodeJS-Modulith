@@ -1,6 +1,33 @@
 <group name="ojs,supportdesk,web,">
-  <rule id="100101" level="4"><decoded_as>json</decoded_as><field name="event_type">auth_failure</field><description>OJS failed login</description></rule>
-  <rule id="100102" level="10" frequency="5" timeframe="60"><if_matched_sid>100101</if_matched_sid><same_field>source_ip</same_field><description>OJS brute force attempts</description><mitre><id>T1110</id></mitre></rule>
-  <rule id="100103" level="9"><decoded_as>json</decoded_as><field name="event_type">access_denied</field><description>OJS unauthorized ticket access</description></rule>
-  <rule id="100104" level="8"><decoded_as>json</decoded_as><field name="event_type">blocked_path_traversal|blocked_ssrf</field><description>OJS blocked malicious request</description></rule>
+  <rule id="100101" level="4">
+    <decoded_as>json</decoded_as>
+    <field name="event_type">^auth_failure$</field>
+    <description>OJS: failed authentication attempt</description>
+  </rule>
+  <rule id="100102" level="10" frequency="5" timeframe="60">
+    <if_matched_sid>100101</if_matched_sid>
+    <same_field>source_ip</same_field>
+    <description>OJS: repeated authentication failures from one source in 60 seconds</description>
+    <mitre><id>T1110.001</id></mitre>
+  </rule>
+  <rule id="100103" level="9">
+    <decoded_as>json</decoded_as>
+    <field name="event_type">^access_denied$</field>
+    <description>OJS: unauthorized resource access attempt</description>
+  </rule>
+  <rule id="100104" level="8">
+    <decoded_as>json</decoded_as>
+    <field name="event_type">^blocked_path_traversal$</field>
+    <description>OJS: blocked knowledge-base traversal probe</description>
+  </rule>
+  <rule id="100105" level="8">
+    <decoded_as>json</decoded_as>
+    <field name="event_type">^blocked_ssrf$</field>
+    <description>OJS: blocked server-side URL fetch attempt</description>
+  </rule>
+  <rule id="100106" level="8">
+    <decoded_as>json</decoded_as>
+    <field name="event_type">^suspicious_sql_input$</field>
+    <description>OJS: SQL-injection-like input observed in search</description>
+  </rule>
 </group>

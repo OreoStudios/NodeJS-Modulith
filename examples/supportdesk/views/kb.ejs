@@ -1,0 +1,4 @@
+<%- include('header',{title:'Knowledge Base',user}) %>
+<div class="eyebrow">HELP CENTER</div><h1>Knowledge base</h1><div class="panel">
+<% for(const file of files){ %><p><a href="/kb/view?doc=<%= encodeURIComponent(file) %>"><%= file.replace('.html','').replaceAll('-',' ') %></a></p><% } %>
+</div><%- include('footer') %>
