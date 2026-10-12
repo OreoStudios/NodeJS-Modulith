@@ -67,7 +67,8 @@ test('ordinary user denied foreign ticket export',async()=>{
 });
 test('knowledge-base files are not exposed as public static assets', async()=> {
   const unauth=await call('/kb/vpn-guide.html');
-  assert.equal(unauth.status,404);
+  assert.equal(unauth.status,302);
+  assert.equal(unauth.headers.get('location'),'/login');
   const stylesheet=await call('/style.css');
   assert.equal(stylesheet.status,200);
 });
