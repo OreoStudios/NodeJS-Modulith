@@ -41,18 +41,17 @@ function initializeDatabase(filename = process.env.SQLITE_PATH || path.join(__di
       comments.create({ticket_id:1,author_id:1,content:'We are reviewing the VPN gateway logs.',created_at:now});
     });
   }
-  // Optional migration of the ORIGINAL local educational database, if copied to
-  // SQLITE_PATH. Never enable against an untrusted production credential store.
+  // The original demo DB may contain plaintext passwords. Only for local
+  // education, opt in to one-time migration using MIGRATE_LEGACY_DEMO_PASSWORDS.
   if (process.env.MIGRATE_LEGACY_DEMO_PASSWORDS === '1') {
     orm.transaction(() => {
-      for (const user of users.list({}, {limit:1000})) {
-        if (!user.password.startsWith('scrypt
-}
-module.exports = { initializeDatabase };
-)) users.update({id:user.id},{password:hashPassword(user.password)});
+      for (const user of users.list({}, { limit: 1000 })) {
+        if (!user.password.startsWith('scrypt')) {
+          users.update({ id: user.id }, { password: hashPassword(user.password) });
+        }
       }
     });
   }
-  return Object.freeze({ db, orm, users, tickets, comments, close:()=>db.close() });
+  return Object.freeze({ db, orm, users, tickets, comments, close: () => db.close() });
 }
 module.exports = { initializeDatabase };
