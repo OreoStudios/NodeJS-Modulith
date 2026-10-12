@@ -7,9 +7,10 @@
   ],
   "scripts": {
     "test": "node --test packages/*/test/*.test.js",
-    "test:all": "npm test && npm --workspace @ojs/supportdesk test"
+    "test:web": "node --test examples/supportdesk/tests/*.test.js",
+    "test:all": "npm test && npm run test:web"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   }
 }
