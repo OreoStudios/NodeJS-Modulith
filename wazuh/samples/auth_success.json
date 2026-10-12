@@ -1,0 +1,1 @@
+{"timestamp":"2026-10-12T12:00:01.000Z","level":"INFO","event_type":"auth_success","source_ip":"192.0.2.25","user":"demo","endpoint":"/login","method":"POST","status_code":200,"message":"Login accepted","query":null,"body":null}

@@ -7,3 +7,4 @@ data/
 logs/
 coverage/
 .DS_Store
+wazuh/vendor/
